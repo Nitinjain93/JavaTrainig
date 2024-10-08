@@ -1,7 +1,9 @@
 package com.example.demo2.service;
 
 import com.example.demo2.model.User;
+import com.example.demo2.model.Post;
 import com.example.demo2.repository.UserRepository;
+import com.example.demo2.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +13,12 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
-    public UserService(UserRepository userRepository) {
+    @Autowired
+    public UserService(UserRepository userRepository, PostRepository postRepository) {
         this.userRepository = userRepository;
+        this.postRepository = postRepository;
     }
 
     public List<User> getAllUsers() {
@@ -37,5 +42,16 @@ public class UserService {
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public Post addPostToUser(Long userId, Post post) {
+        User user = userRepository.findById(userId).orElseThrow();
+        post.setUser(user); // Associate the post with the user
+        return postRepository.save(post); // Save the post
+    }
+
+    public List<Post> getUserPosts(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        return user.getPosts();
     }
 }

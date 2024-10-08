@@ -1,9 +1,8 @@
 package com.example.demo2.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference; // Import this
+import java.util.List;
 
 @Entity
 public class User {
@@ -12,6 +11,9 @@ public class User {
     private Long id;
     private String name;
     private String email;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Post> posts;
 
     // Getters and Setters
     public Long getId() {
@@ -36,5 +38,12 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
     }
 }
